@@ -1,6 +1,7 @@
 const express = require('express')
 const colors = require('colors')
 const connectDB = require('./config/dbConfig')
+const errorHandler = require('./middleware/errorHandler')
 require('dotenv').config()
 
 
@@ -42,3 +43,6 @@ app.use("/api/rating", require("./routes/ratingRoutes"))
 
 
 app.listen(PORT, () => { console.log(`SERVER IS RUNNING AT PORT : ${PORT}`.bgBlue.black) })
+
+// Error Handler
+app.use(errorHandler)

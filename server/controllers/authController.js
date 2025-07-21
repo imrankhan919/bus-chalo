@@ -1,5 +1,6 @@
 const User = require("../models/userModel")
 const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
 
 const registerUser = async (req, res) => {
 
@@ -50,7 +51,8 @@ const registerUser = async (req, res) => {
         gender: user.gender,
         age: user.age,
         isActive: user.isActive,
-        isAdmin: user.isAdmin
+        isAdmin: user.isAdmin,
+        token: generateToken(user._id)
     })
 }
 
@@ -76,7 +78,8 @@ const loginUser = async (req, res) => {
             gender: user.gender,
             age: user.age,
             isActive: user.isActive,
-            isAdmin: user.isAdmin
+            isAdmin: user.isAdmin,
+            token: generateToken(user._id)
         })
     } else {
         res.status(401)
@@ -85,6 +88,14 @@ const loginUser = async (req, res) => {
 
 
 }
+
+
+const generateToken = (id) => {
+    let token = jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '10d' })
+    return token
+}
+
+
 
 
 module.exports = { registerUser, loginUser }
