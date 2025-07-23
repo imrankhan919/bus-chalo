@@ -90,6 +90,17 @@ const loginUser = async (req, res) => {
 }
 
 
+
+const privateController = async (req, res) => {
+    res.json({
+        msg: "Request By : ",
+        user: req.user
+    })
+}
+
+
+
+
 const generateToken = (id) => {
     let token = jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '10d' })
     return token
@@ -98,4 +109,4 @@ const generateToken = (id) => {
 
 
 
-module.exports = { registerUser, loginUser }
+module.exports = { registerUser, loginUser, privateController }
