@@ -7,15 +7,15 @@ const router = express.Router()
 
 router.post('/bus', adminProtect, addBus)
 
-router.put('/bus/:bsid', updateBus)
-router.put('/booking/:bid', updateBooking)
-router.put('/user/:uid', updateUser)
+router.put('/bus/:bsid', adminProtect, updateBus)
+router.put('/booking/:bid', adminProtect, updateBooking)
+router.put('/user/:uid', adminProtect, updateUser)
 
 
 
-router.get('/view-users', getAllUsers)
-router.get('/view-ratings', getAllRatings)
-router.get('/view-bookings', getAllBookings)
+router.get('/view-users', adminProtect, getAllUsers)
+router.get('/view-ratings', adminProtect, getAllRatings)
+router.get('/view-bookings', adminProtect, getAllBookings)
 
 
 module.exports = router
