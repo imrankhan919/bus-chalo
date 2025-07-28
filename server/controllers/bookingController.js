@@ -36,9 +36,6 @@ const addBooking = async (req, res) => {
         throw new Error('Booking Failed!')
     }
 
-    //    Update Bus Seats
-    await Bus.findByIdAndUpdate(req.params.bsid, { seats: bus.seats - ticketCount }, { new: true })
-
     res.status(201).json(booking)
 
 

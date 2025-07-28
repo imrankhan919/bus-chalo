@@ -1,12 +1,14 @@
 const Bus = require("../models/busModel")
 const User = require("../models/userModel")
+const Booking = require("../models/bookingModel")
 
 const addBus = async (req, res) => {
 
     const {
         name,
         model,
-        seats,
+        totalSeats,
+        availableSeats,
         busType,
         pickupLocation,
         dropLocation,
@@ -18,7 +20,7 @@ const addBus = async (req, res) => {
 
     if (!name ||
         !model ||
-        !seats ||
+        !totalSeats || !availableSeats ||
         !busType ||
         !pickupLocation ||
         !dropLocation ||
@@ -42,7 +44,7 @@ const addBus = async (req, res) => {
     let bus = await Bus.create({
         name,
         model,
-        seats,
+        totalSeats, availableSeats,
         busType,
         pickupLocation,
         dropLocation,
@@ -92,11 +94,46 @@ const getAllRatings = async (req, res) => {
 
 
 const getAllBookings = async (req, res) => {
-    res.send('All Bookings Here')
+    const bookings = await Booking.find().populate('user').populate('bus')
+
+    if (!bookings) {
+        res.status(404)
+        throw new Error('Bookings Not Found')
+    }
+
+
+    res.status(200).json(bookings)
 }
 
 const updateBooking = async (req, res) => {
-    res.send('Booking Updated')
+
+    const booking = await Booking.findById(req.params.bid)
+
+    if (!booking) {
+        res.status(404)
+        throw new Error('No Booking Found')
+    }
+
+    const bus = await Bus.findById(booking.bus)
+
+    if (!bus) {
+        res.status(404)
+        throw new Error('No Booking Found')
+    }
+
+    const updatedBooking = await Booking.findByIdAndUpdate(req.params.bid, req.body, { new: true }).populate('user').populate('bus')
+
+    if (!updatedBooking) {
+        res.status(400)
+        throw new Error('Booking Not Updated!')
+    }
+
+    //    Update Bus Seats
+    await Bus.findByIdAndUpdate(booking.bus, { availableSeats: bus.totalSeats - booking.ticketCount }, { new: true })
+
+    res.status(200).json(updatedBooking)
+
+
 }
 
 const updateUser = async (req, res) => {

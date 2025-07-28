@@ -13,7 +13,12 @@ const busSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    seats: {
+    totalSeats: {
+        type: Number,
+        required: true,
+        default: 16
+    },
+    availableSeats: {
         type: Number,
         required: true,
         default: 16
