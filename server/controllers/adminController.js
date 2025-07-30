@@ -137,7 +137,27 @@ const updateBooking = async (req, res) => {
 }
 
 const updateUser = async (req, res) => {
-    res.send('User Updated')
+
+
+    const user = await User.findById(req.params.uid)
+
+    if (!user) {
+        res.status(404)
+        throw new Error('User Not Found!')
+    }
+
+
+    const updatedUser = await User.findByIdAndUpdate(req.params.uid, { isActive: false }, { new: true })
+
+    if (!updatedUser) {
+        res.status(400)
+        throw new Error('User cannot be updated')
+    }
+
+
+    res.status(200).json(updatedUser)
+
+
 }
 
 

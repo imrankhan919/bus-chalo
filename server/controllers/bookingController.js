@@ -55,10 +55,43 @@ const getBooking = async (req, res) => {
 
 }
 const cancelBooking = async (req, res) => {
-    res.send("Booking Canceled")
+
+    const booking = await Booking.findById(req.params.bid)
+
+    if (!booking) {
+        res.status(404)
+        throw new Error('Booking Not Found!')
+    }
+
+    if (booking.status === "accepted") {
+        res.status(400)
+        throw new Error('Booking Cannot Be Canceled After Accepted!')
+    }
+
+
+    const updatedBooking = await Booking.findByIdAndUpdate(req.params.bid, { status: "cancelled" }, { new: true }).populate('bus').populate('user')
+
+    if (!updatedBooking) {
+        res.status(400)
+        throw new Error('Booking Not Updated!')
+    }
+
+
+    res.status(200).json(updatedBooking)
+
+
 }
 const getAllMyBookings = async (req, res) => {
-    res.send("My All Bookings Here")
+
+    const myBookings = await Booking.find({ user: req.user._id }).populate('bus')
+
+    if (!myBookings) {
+        res.status(404)
+        throw new Error('Bookings Not Found!!')
+    }
+
+    res.status(200).json(myBookings)
+
 }
 
 module.exports = { addBooking, getBooking, cancelBooking, getAllMyBookings }
